@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#00bcd4">
+    <title>Költségfigyelő</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192x192.png">
+    <style>
+        /* Animált háttér */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://www.transparenttextures.com/patterns/fancy-grid.png'), linear-gradient(135deg, #00bcd4, #ff7e5f);
+            background-size: cover;
+            background-attachment: fixed;
+            color: white;
+            text-align: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            animation: backgroundAnimation 15s infinite alternate;
+        }
+
+        @keyframes backgroundAnimation {
+            0% {
+                background: linear-gradient(135deg, #00bcd4, #ff7e5f);
+            }
+            100% {
+                background: linear-gradient(135deg, #ff7e5f, #00bcd4);
+            }
+        }
+
+        h1 {
+            margin-top: 20px;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .container {
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        /* Kategóriák */
+        .category-container {
+            display: flex;
+            justify-content: space-evenly;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .category {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            width: 30%;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .category:hover {
+            transform: scale(1.05);
+        }
+
+        .category i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .category p {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        button {
+            background-color: #ff7e5f;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff5c39;
+        }
+
+        .entries {
+            margin-top: 30px;
+        }
+
+        .entry {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .entry p {
+            margin: 0;
+        }
+
+        .summary {
+            margin-top: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .summary h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            font-size: 1.1rem;
+        }
+
+        .footer {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Költségfigyelő</h1>
+    
+    <div class="container">
+        <!-- Kategóriák -->
+        <div class="category-container">
+            <div class="category">
+                <i class="fas fa-utensils"></i>
+                <p>Étel</p>
+                <button onclick="addExpense('food')">Bevitel</button>
+            </div>
+            <div class="category">
+                <i class="fas fa-cogs"></i>
+                <p>Autó (Benzin, Szerviz)</p>
+                <button onclick="addExpense('car')">Bevitel</button>
+            </div>
+            <div class="category">
+                <i class="fas fa-shoe-prints"></i>
+                <p>Közlekedés</p>
+                <button onclick="addExpense('transport')">Bevitel</button>
+            </div>
+            <div class="category">
+                <i class="fas fa-laptop"></i>
+                <p>Szórakozás</p>
+                <button onclick="addExpense('entertainment')">Bevitel</button>
+            </div>
+            <div class="category">
+                <i class="fas fa-bolt"></i>
+                <p>Energia (Villany, Gáz)</p>
+                <button onclick="addExpense('energy')">Bevitel</button>
+            </div>
+            <div class="category">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Vásárlások</p>
+                <button onclick="addExpense('shopping')">Bevitel</button>
+            </div>
+        </div>
+
+        <!-- Összegzés -->
+        <div class="summary">
+            <h3>Összegzés</h3>
+            <p><strong>Bevételek:</strong> <span id="totalIncome">0 Ft</span></p>
+            <p><strong>Kiadások:</strong> <span id="totalExpense">0 Ft</span></p>
+            <p><strong>Megtakarítások:</strong> <span id="totalSavings">0 Ft</span></p>
+            <p><strong>Egyenleg:</strong> <span id="balance">0 Ft</span></p>
+        </div>
+
+        <!-- Adatok -->
+        <div class="entries">
+            <div id="incomeEntries"></div>
+            <div id="expenseEntries"></div>
+            <div id="savingsEntries"></div>
+        </div>
+    </div>
+
+    <button onclick="downloadReport()">Letöltés ZIP-ben</button>
+
+    <div class="footer">
+        <p>© 2025 Költségfigyelő App</p>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script>
+        const incomeEntries = [];
+        const expenseEntries = [];
+        const savingsEntries = [];
+
+        function addIncome() {
+            const amount = parseFloat(prompt("Add meg a bevételt:"));
+            if (!isNaN(amount)) {
+                const date = new Date().toLocaleDateString();
+                incomeEntries.push({ amount, date });
+                updateSummary();
+                renderEntries();
+            }
+        }
+
+        function addExpense(category) {
+            const amount = parseFloat(prompt("Add meg a kiadást:"));
+            if (!isNaN(amount)) {
+                const date = new Date().toLocaleDateString();
+                expenseEntries.push({ amount, date, category });
+                updateSummary();
+                renderEntries();
+            }
+        }
+
+        function addSavings() {
+            const amount = parseFloat(prompt("Add meg a megtakarítást:"));
+            if (!isNaN(amount)) {
+                const date = new Date().toLocaleDateString();
+                savingsEntries.push({ amount, date });
+                updateSummary();
+                renderEntries();
+            }
+        }
+
+        function updateSummary() {
+            const totalIncome = incomeEntries.reduce((sum, entry) => sum + entry.amount, 0);
+            const totalExpense = expenseEntries.reduce((sum, entry) => sum + entry.amount, 0);
+            const totalSavings = savingsEntries.reduce((sum, entry) => sum + entry.amount, 0);
+            const balance = totalIncome - totalExpense;
+
+            document.getElementById("totalIncome").textContent = `${totalIncome} Ft`;
+            document.getElementById("totalExpense").textContent = `${totalExpense} Ft`;
+            document.getElementById("totalSavings").textContent = `${totalSavings} Ft`;
+            document.getElementById("balance").textContent = `${balance} Ft`;
+        }
+
+        function renderEntries() {
+            const expenseContainer = document.getElementById("expenseEntries");
+            expenseContainer.innerHTML = '';
+            expenseEntries.forEach(entry => {
+                const div = document.createElement("div");
+                div.className = "entry";
+                div.innerHTML = `<p>${entry.category}: ${entry.amount} Ft - ${entry.date}</p>`;
+                expenseContainer.appendChild(div);
+            });
+        }
+
+        function downloadReport() {
+            const zip = new JSZip();
+            const content = JSON.stringify({ incomeEntries, expenseEntries, savingsEntries });
+            zip.file("report.json", content);
+            zip.generateAsync({ type: "blob" }).then(function(content
